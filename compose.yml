@@ -19,21 +19,21 @@ services:
   backend1:
     image: stephanpaulramirez/backend:latest
     environment:
-      - DB_HOST=192.168.4.80
+      - DB_HOST=10.0.0.4
     networks:
       - backend-network
 
   backend2:
     image: stephanpaulramirez/backend:latest
     environment:
-      - DB_HOST=192.168.4.80
+      - DB_HOST=10.0.0.4
     networks:
       - backend-network
 
   backend3:
     image: stephanpaulramirez/backend:latest
     environment:
-      - DB_HOST=192.168.4.80
+      - DB_HOST=10.0.0.4
     networks:
       - backend-network
 
