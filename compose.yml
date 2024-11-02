@@ -2,44 +2,57 @@ services:
   # Frontend services
   frontend1:
     image: stephanpaulramirez/frontend:latest
+    container_name: frontend1
     networks:
       - frontend-network
 
   frontend2:
     image: stephanpaulramirez/frontend:latest
+    container_name: frontend2
     networks:
       - frontend-network
 
   frontend3:
     image: stephanpaulramirez/frontend:latest
+    container_name: frontend3
     networks:
       - frontend-network
 
   # Backend services
   backend1:
     image: stephanpaulramirez/backend:latest
+    container_name: backend1
     environment:
-      - DB_HOST=10.0.0.4
+      - DB_HOST=db
     networks:
       - backend-network
+    depends_on:
+      - db
 
   backend2:
     image: stephanpaulramirez/backend:latest
+    container_name: backend2
     environment:
-      - DB_HOST=10.0.0.4
+      - DB_HOST=db
     networks:
       - backend-network
+    depends_on:
+      - db
 
   backend3:
     image: stephanpaulramirez/backend:latest
+    container_name: backend3
     environment:
-      - DB_HOST=10.0.0.4
+      - DB_HOST=db
     networks:
       - backend-network
+    depends_on:
+      - db
 
   # Nginx for frontend load balancing
   nginx-frontend:
     image: nginx:latest
+    container_name: nginx-frontend
     ports:
       - "8070:80"
     volumes:
@@ -54,6 +67,7 @@ services:
   # Nginx for backend load balancing
   nginx-backend:
     image: nginx:latest
+    container_name: nginx-backend
     ports:
       - "8090:8090"
     volumes:
@@ -65,6 +79,22 @@ services:
     networks:
       - backend-network
 
+  # PostgreSQL Database
+  db:
+    image: postgres:latest
+    container_name: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=prestabanco
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+
 networks:
   frontend-network:
   backend-network:
+
+volumes:
+  postgres_data:
