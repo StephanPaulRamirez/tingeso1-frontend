@@ -4,9 +4,21 @@ pipeline {
         nodejs 'node'
     }
     stages{
-        stage('create build'){
+
+        stage('Checkout'){
             steps{
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/StephanPaulRamirez/tingeso1-frontend']])
+            }
+        }
+
+        stage('Install dependencies'){
+            steps{
+                bat 'npm install'
+            }
+        }
+
+        stage('Build frontend'){
+            steps{
                 bat 'npm run build'
             }
         }
