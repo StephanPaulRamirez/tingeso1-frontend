@@ -159,6 +159,7 @@ const LoanRequest = () => {
         savingsCapacity: '',
       });
       setDocuments({});
+      e.target.reset();
     } catch (error) {
       console.error('Error al enviar la solicitud de préstamo:', error);
     }
