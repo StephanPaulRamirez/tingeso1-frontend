@@ -16,9 +16,11 @@ const LoanEvaluation = () => {
   ];
   const approvalStatusOptions = ['Aprobada', 'En Desembolso'];
 
-  const statusOptions = loan?.status === 'En Aprobación Final' 
-    ? approvalStatusOptions 
+  const statusOptions = 
+  ['En Aprobación Final', 'Aprobada', 'En Desembolso'].includes(loan?.status)
+    ? approvalStatusOptions
     : initialStatusOptions;
+
   
   const loanDetails = {
     'Primera Vivienda': ['- Comprobante de ingresos', '- Certificado de avalúo', '- Historial crediticio'],
