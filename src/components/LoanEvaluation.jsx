@@ -82,7 +82,6 @@ const LoanSearch = () => {
                     <TableCell>{request.monthlyInstallment}</TableCell>
                     <TableCell>
                       {request.status !== 'Cancelada por el Cliente' &&
-                       request.status !== 'Aprobada' &&
                        request.status !== 'Rechazada' &&
                        request.status !== 'En Desembolso' && (
                         <Button
