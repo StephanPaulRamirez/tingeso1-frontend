@@ -14,7 +14,11 @@ const LoanEvaluation = () => {
   const initialStatusOptions = [
     'En Revisión Inicial', 'En Evaluación', 'Pre-Aprobada', 'Rechazada'
   ];
-  const approvalStatusOptions = ['Aprobada', 'Rechazada', 'En Desembolso'];
+  const approvalStatusOptions = ['Aprobada', 'En Desembolso'];
+
+  const statusOptions = loan?.status === 'En Aprobación Final' 
+    ? approvalStatusOptions 
+    : initialStatusOptions;
   
   const loanDetails = {
     'Primera Vivienda': ['- Comprobante de ingresos', '- Certificado de avalúo', '- Historial crediticio'],
@@ -82,14 +86,6 @@ const LoanEvaluation = () => {
     }));
   };
 
-  const isStatusChangeAllowed = (option) => {
-    if (loan.status === 'En Aprobación Final') {
-      return approvalStatusOptions.includes(option);
-    } else if (['En Revisión Inicial', 'En Evaluación', 'Pre-Aprobada'].includes(loan.status)) {
-      return initialStatusOptions.includes(option);
-    }
-    return false;
-  };
 
   const handleSave = async () => {
     try {
@@ -181,11 +177,12 @@ const LoanEvaluation = () => {
         margin="normal"
       >
         {statusOptions.map((option) => (
-          <MenuItem key={option} value={option} disabled={!isStatusChangeAllowed(option)}>
+          <MenuItem key={option} value={option}>
             {option}
           </MenuItem>
         ))}
       </TextField>
+
 
       <Button variant="contained" color="primary" onClick={handleSave} fullWidth>
         Guardar Cambios
