@@ -49,6 +49,15 @@ const SimulateLoan = () => {
 - Presupuesto de la remodelación
 - Certificado de avalúo actualizado`,
     },
+
+    'Local Comercial': {
+      maxTerm: 15,
+      interestRateRange: [4.5, 6],
+      maxFinancing: 50,
+      documents: `- Comprobante de ingresos
+- Presupuesto de la remodelación
+- Certificado de avalúo actualizado`,
+    },
   };
 
   useEffect(() => {
