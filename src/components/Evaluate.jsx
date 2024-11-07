@@ -10,14 +10,12 @@ const LoanEvaluation = () => {
   const [loan, setLoan] = useState(null);
   const [loading, setLoading] = useState(true);
   const [documents, setDocuments] = useState([]);
-
-  const statusOptions = [
-    'En Revisión Inicial', 'En Evaluación', 'Pre-Aprobada', 'En Aprobación Final',
-    'Aprobada', 'Rechazada', 'En Desembolso',
+  
+  const initialStatusOptions = [
+    'En Revisión Inicial', 'En Evaluación', 'Pre-Aprobada', 'Rechazada'
   ];
-
-  const savingsOptions = ['Sólida', 'Moderada', 'Insuficiente'];
-
+  const approvalStatusOptions = ['Aprobada', 'Rechazada', 'En Desembolso'];
+  
   const loanDetails = {
     'Primera Vivienda': ['- Comprobante de ingresos', '- Certificado de avalúo', '- Historial crediticio'],
     'Segunda Vivienda': ['- Comprobante de ingresos', '- Certificado de avalúo', '- Escritura de la primera vivienda', '- Historial crediticio'],
@@ -50,7 +48,6 @@ const LoanEvaluation = () => {
         
         const loanTypeDocuments = loanDetails[response.data.loanType] || [];
         setDocuments(loanTypeDocuments);
-
       } catch (error) {
         console.error('Error al cargar la solicitud:', error);
       } finally {
@@ -63,23 +60,35 @@ const LoanEvaluation = () => {
   const handleBooleanChange = (field) => {
     setLoan((prevLoan) => {
       const updatedLoan = { ...prevLoan, [field]: !prevLoan[field] };
+      
       const criteriaMet = Object.keys(savingsCriteria).filter((key) => updatedLoan[key]).length;
       if (criteriaMet === 5) {
         updatedLoan.savingsCapacity = 'Sólida';
-      } else if (criteriaMet >= 3) {
-        updatedLoan.savingsCapacity = 'Moderada';
+        updatedLoan.status = 'Pre-Aprobada';
       } else {
-        updatedLoan.savingsCapacity = 'Insuficiente';
+        updatedLoan.savingsCapacity = criteriaMet >= 3 ? 'Moderada' : 'Insuficiente';
+        updatedLoan.status = 'En Evaluación';
       }
+      
       return updatedLoan;
     });
   };
 
   const handleStatusChange = (event) => {
+    const selectedStatus = event.target.value;
     setLoan((prevLoan) => ({
       ...prevLoan,
-      status: event.target.value,
+      status: selectedStatus,
     }));
+  };
+
+  const isStatusChangeAllowed = (option) => {
+    if (loan.status === 'En Aprobación Final') {
+      return approvalStatusOptions.includes(option);
+    } else if (['En Revisión Inicial', 'En Evaluación', 'Pre-Aprobada'].includes(loan.status)) {
+      return initialStatusOptions.includes(option);
+    }
+    return false;
   };
 
   const handleSave = async () => {
@@ -119,7 +128,7 @@ const LoanEvaluation = () => {
       </Typography>
 
       <Typography variant="body2" color="textSecondary" style={{ marginBottom: '8px' }}>
-        Relación cuota-ingreso segun lo ingresado manualmente por el cliente: {loan.ratio} %
+        Relación cuota-ingreso según lo ingresado manualmente por el cliente: {loan.ratio} %
       </Typography>
 
       <FormGroup>
@@ -143,13 +152,7 @@ const LoanEvaluation = () => {
         fullWidth
         margin="normal"
         InputProps={{ readOnly: true }}
-      >
-        {savingsOptions.map((option) => (
-          <MenuItem key={option} value={option}>
-            {option}
-          </MenuItem>
-        ))}
-      </TextField>
+      />
 
       <FormGroup style={{ marginLeft: '2em' }}>
         <Typography variant="h6" gutterBottom>
@@ -178,7 +181,7 @@ const LoanEvaluation = () => {
         margin="normal"
       >
         {statusOptions.map((option) => (
-          <MenuItem key={option} value={option}>
+          <MenuItem key={option} value={option} disabled={!isStatusChangeAllowed(option)}>
             {option}
           </MenuItem>
         ))}
@@ -206,3 +209,4 @@ const LoanEvaluation = () => {
 };
 
 export default LoanEvaluation;
+
